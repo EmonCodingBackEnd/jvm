@@ -1,6 +1,9 @@
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
+### 内存堆转储快照文件 ###
+*.hprof
+
 ### STS ###
 .apt_generated
 .classpath
