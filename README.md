@@ -28,6 +28,8 @@
 ### 1.1.2 Java虚拟机栈
 
 - 线程私有
+- JVM参数
+  - -Xss：设置每个线程的虚拟机栈大小
 - 虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行的同时都会创建一个栈帧（Stack Frame）用于存储局部变量表、操作数、动态链接、方法出口等信息。
 - 在Java虚拟机规范中，对这个区域规定了两种异常情况
   - 如果线程请求的栈深度大于虚拟机所允许的深度，将抛出`StackOverflowError`异常。
@@ -37,6 +39,8 @@
 ### 1.1.3 本地方法栈
 
 - 线程私有
+- JVM参数
+  - -Xoss：本地方法栈大小，实际无效
 - 为虚拟机使用到的Native方法服务
 - 本地方法栈区域也会抛出`StackOverflowError`和`OutOfMemoryError`异常。
 
@@ -44,10 +48,27 @@
 
 - 线程共享
 - JVM参数
-  - -Xms：最小堆内存
-  - -Xmx：最大堆内存
+  - -XX:NewSize：设置新生代的初始大小
+  - -XX:MaxNewSize：设置新生代最大值
+  - -Xmn：年轻代大小
+    - JVM堆内存=年轻代+年老代=持久代，持久代一般固定大小64M，所以增大年轻代，将减小年老代大小。该值对系统性能影响较大，Sun官方推荐配置为整个堆的3/8。
+    - 效果等同于-XX:NewSize和-XX:MaxNewSize
+  - -Xms：最小堆内存，针对新生代和年老代
+  - -Xmx：最大堆内存，针对新生代和年老代
+  - -XX:NewRatio=年老代/新生代
+    - 设置年轻代（包括Eden和两个Survivor区）与年老代的比值（除去持久代）。设置为4，则年轻代与年老代所占比值为1:4，年轻代占整个堆栈的1/5。
+  - -XX:SurvivorRatio
+    - 设置年轻代中Eden区与Survivor区的大小比值。设置为4，则两个Survivor区（From Survivor与To Survivor）与一个Eden区的比值为2:4，一个Survivor区占整个年轻代的1/6。
+  - -XX:PermSize：设置持久代最小值
+  - -XX:MaxPermSize：设置持久代最大值
+  - -XX:MaxTenuringThreshold
+    - 设置垃圾最大年龄。如果设置为0，则年轻代对象不经过Surivor区，直接进入年老代。
 - 异常
   - 如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出`OutOfMemoryError`异常。
+
+[堆内存与垃圾回收](https://blog.csdn.net/cpcpcp123/article/details/51262940)
+
+[JVM参数详解](http://unixboy.iteye.com/blog/174173/)
 
 ### 1.1.5 方法区
 
